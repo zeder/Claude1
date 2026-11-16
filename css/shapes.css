@@ -12,7 +12,7 @@
 .item.hole.ready .item-in > svg { animation: hole-pulse .7s ease-in-out infinite; }
 .item.hole.ready { filter: drop-shadow(0 0 14px rgba(255, 255, 255, .95)) drop-shadow(0 0 6px #ffd23f); }
 .item.hole.filled { filter: none; }
-.item.hole.filled .item-in { opacity: 0; }
+.item.hole.filled .item-in { animation: none; opacity: 0; }
 .item.piece.placed .item-in > svg { animation: none; }
 .item.piece.placed { z-index: 12; }
 
