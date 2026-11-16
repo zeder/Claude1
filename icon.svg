@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <clipPath id="tile">
+      <rect width="512" height="512" rx="112" ry="112"/>
+    </clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" ry="112" fill="#8fd8ff"/>
+  <path clip-path="url(#tile)" d="M-20 430 C120 340 392 340 532 430 V540 H-20 Z" fill="#61d67c"/>
+  <!-- Bolt's head, copied from js/robot.js (viewBox 120x150), centred and scaled -->
+  <g transform="translate(256 222) scale(2.8) translate(-60 -49)">
+    <path d="M60 30 V14" fill="none" stroke="#2b2d5b" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="60" cy="11" r="7.5" fill="#ffd23f" stroke="#2b2d5b" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="6" y="48" width="14" height="22" rx="6" fill="#ff9f1c" stroke="#2b2d5b" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="100" y="48" width="14" height="22" rx="6" fill="#ff9f1c" stroke="#2b2d5b" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="14" y="26" width="92" height="68" rx="30" fill="#f7faff" stroke="#2b2d5b" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    <ellipse cx="34" cy="40" rx="6" ry="9" fill="#fff" transform="rotate(35 34 40)"/>
+    <rect x="25" y="37" width="70" height="46" rx="21" fill="#2b2d5b"/>
+    <ellipse cx="45" cy="57" rx="7.5" ry="9.5" fill="#7df6ff"/>
+    <ellipse cx="75" cy="57" rx="7.5" ry="9.5" fill="#7df6ff"/>
+    <circle cx="42.5" cy="53.5" r="2.5" fill="#fff"/>
+    <circle cx="72.5" cy="53.5" r="2.5" fill="#fff"/>
+    <path d="M38 60 Q45 49 52 60" fill="none" stroke="#7df6ff" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M68 60 Q75 49 82 60" fill="none" stroke="#7df6ff" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M52 71 Q60 79 68 71" fill="none" stroke="#7df6ff" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="33" cy="71" r="4" fill="#ff7eb6" opacity=".85"/>
+    <circle cx="87" cy="71" r="4" fill="#ff7eb6" opacity=".85"/>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+{
+  "name": "Little Garden",
+  "short_name": "Garden",
+  "description": "A gentle drag-and-play garden of fruit, shapes and star catching for little children.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#8fd8ff",
+  "theme_color": "#8fd8ff",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
