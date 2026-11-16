@@ -75,8 +75,8 @@
   function layout() {
     const z = ctx.zone(), h = z.y1 - z.y0;
     const xs = U.spread(animals.length, z.x0, z.x1);
-    animals.forEach((a, i) => U.place(a.el, xs[i], z.y0 + h * 0.24));
-    fruits.forEach((f, i) => U.place(f.el, xs[i], z.y0 + h * 0.84));
+    animals.forEach((a, i) => U.place(a.el, xs[i], z.y0 + h * (ctx.portrait() ? 0.3 : 0.24)));
+    fruits.forEach((f, i) => U.place(f.el, xs[i], z.y0 + h * (ctx.portrait() ? 0.78 : 0.84)));
   }
   function hint() {
     const f = fruits.find((x) => !x.done && !x.handle.dragging);

@@ -51,7 +51,10 @@ window.LG = window.LG || {};
      elements stops animations fighting the drag. */
   U.item = function (svg, cls) {
     const e = U.el('div', 'item ' + (cls || ''));
-    e.appendChild(U.el('div', 'item-in', svg));
+    const inner = U.el('div', 'item-in', svg);
+    /* once popped in, drop the entrance animation so later reactions cannot replay it */
+    inner.addEventListener('animationend', function (ev) { if (ev.animationName === 'pop-in') inner.classList.add('in'); });
+    e.appendChild(inner);
     return e;
   };
   /* Restartable one-shot CSS animation class. */

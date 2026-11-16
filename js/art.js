@@ -115,7 +115,7 @@
   A.shape = function (kind, color, opts) {
     const s = SHAPES[kind], c = COLORS[color];
     if (opts && opts.hole) {
-      return svg('<path d="' + s.d + '" fill="' + INK + '" opacity=".24" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>' +
+      return svg('<path d="' + s.d + '" fill="' + c.d + '" opacity=".3" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>' +
         '<path d="' + s.d + '" fill="none" stroke="' + c.b + '" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="1 10"/>');
     }
     return svg('<path d="' + s.d + '" fill="' + c.b + '" ' + S + ' stroke-width="5"/>' +

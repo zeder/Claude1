@@ -74,7 +74,7 @@
   function layout() {
     const z = ctx.zone(), h = z.y1 - z.y0;
     const xs = U.spread(holes.length, z.x0, z.x1);
-    const holeY = z.y0 + h * 0.27, pieceY = z.y0 + h * 0.83;
+    const p = ctx.portrait(), holeY = z.y0 + h * (p ? 0.31 : 0.27), pieceY = z.y0 + h * (p ? 0.78 : 0.83);
     if (board) {
       board.style.left = (z.x0 + z.x1) / 2 + '%';
       board.style.width = Math.min(96, z.x1 - z.x0 + 4) + '%';

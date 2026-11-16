@@ -82,8 +82,8 @@
   /* Small star burst where something good just happened. */
   C.sparkle = function (x, y, color, radius) {
     const s = Math.max(1, Math.min(W, H) / 520), r = radius || 60 * s;
-    ring(x, y, r * 0.7, r * 1.8, '#ffffff', 8 * s);
-    ring(x, y, r * 0.5, r * 1.45, color || '#ffd23f', 6 * s);
+    ring(x, y, r * 0.6, r * 1.25, '#ffffff', 7 * s);
+    ring(x, y, r * 0.4, r * 1.0, color || '#ffd23f', 5 * s);
     /* outlined yellow and white stars thrown well clear of the target, so its face stays visible */
     burst(x, y, amount(16), { min: 380 * s, max: 760 * s, lift: 120, g: 900, drag: 0.94, s0: 9 * s, s1: 16 * s, t0: 0.7, t1: 1.1, shape: 'star', colors: ['#ffd23f', '#ffffff', '#ffd23f', color || '#ffd23f'], line: true });
     burst(x, y, amount(10), { min: 250 * s, max: 600 * s, lift: 80, g: 700, drag: 0.94, s0: 4 * s, s1: 8 * s, t0: 0.5, t1: 0.9, shape: 'dot', color: '#ffffff' });
@@ -117,7 +117,6 @@
   C.firework = function (x, y) {
     const s = Math.max(1, Math.min(W, H) / 500), a = Math.floor(U.rand(0, COLORS.length));
     const trio = [COLORS[a], COLORS[(a + 3) % COLORS.length], '#ffd23f', '#ffffff'];
-    ring(x, y, 10, 110 * s, '#ffffff', 5 * s);
     burst(x, y, amount(46), { min: 150 * s, max: 520 * s, g: 320, drag: 0.97, s0: 6 * s, s1: 12 * s, t0: 0.9, t1: 1.6, shape: 'star', colors: trio });
     burst(x, y, amount(24), { min: 60 * s, max: 300 * s, g: 260, drag: 0.97, s0: 4 * s, s1: 8 * s, t0: 0.8, t1: 1.3, shape: 'dot' });
   };
