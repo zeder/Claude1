@@ -2,14 +2,15 @@
 (function (LG) {
   'use strict';
   const U = LG.util, A = LG.art, D = LG.drag;
-  const COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'teal'];
+  const PAIRS = [['red', 'pink'], ['orange', 'yellow'], ['green', 'teal'], ['blue', 'purple']];
   let ctx, board = null, holes = [], pieces = [];
 
   function start(c) {
     ctx = c;
     const n = ctx.count();
     const kinds = U.shuffle(A.SHAPE_KINDS).slice(0, n);
-    const colors = U.shuffle(COLORS).slice(0, n);
+    /* one colour from each look-alike pair, so no two pieces in a round are close in hue */
+    const colors = U.shuffle(PAIRS).slice(0, n).map((p) => U.pick(p));
 
     board = U.el('div', 'shape-board');
     ctx.layer.appendChild(board);
@@ -76,7 +77,7 @@
     const holeY = z.y0 + h * 0.27, pieceY = z.y0 + h * 0.83;
     if (board) {
       board.style.left = (z.x0 + z.x1) / 2 + '%';
-      board.style.width = Math.min(98, z.x1 - z.x0 + 5) + '%';
+      board.style.width = Math.min(96, z.x1 - z.x0 + 4) + '%';
       board.style.top = holeY + '%';
     }
     holes.forEach((hl, i) => U.place(hl.el, xs[i], holeY));

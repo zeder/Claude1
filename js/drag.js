@@ -30,8 +30,11 @@
       const c = U.center(el);           // may be mid-glide: pick it up where it is
       dx = c.x - home.x; dy = c.y - home.y;
       grab = { x: e.clientX - c.x, y: e.clientY - c.y };
+      /* under a finger the piece rides a little higher, so the child can see it and its target */
+      if (e.pointerType && e.pointerType !== 'mouse') { grab.y += 28; dy -= 28; }
       el.classList.add('dragging');
       apply(1.15, false);
+      el.style.transition = 'transform .12s ease-out';
       if (opts.onStart) opts.onStart();
     }
     function move(e) {

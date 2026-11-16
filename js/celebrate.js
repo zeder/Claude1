@@ -19,6 +19,7 @@
   function amount(n) { return Math.round(U.reducedMotion() ? n * 0.3 : n); }
   function add(p) {
     if (parts.length > 700) return;
+    p.s0 = p.size;
     parts.push(p);
     if (!running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
   }
@@ -44,11 +45,12 @@
       p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
       const fade = Math.min(1, (p.max - p.life) / 0.35);
       g.save();
-      g.globalAlpha = fade;
+      /* shrink away instead of going see-through (no muddy half-faded colours) */
+      if (p.shape !== 'ring') p.size = p.s0 * fade; else g.globalAlpha = fade;
       g.translate(p.x, p.y); g.rotate(p.rot);
       g.fillStyle = p.color;
       if (p.shape === 'ring') {
-        g.globalAlpha = fade * 0.9; g.strokeStyle = p.color; g.lineWidth = p.size * (1 - p.life / p.max) + 1;
+        g.strokeStyle = p.color; g.lineWidth = p.s0 * (1 - p.life / p.max) + 1;
         g.beginPath(); g.arc(0, 0, p.r0 + (p.r1 - p.r0) * Math.sqrt(p.life / p.max), 0, 7); g.stroke();
       } else if (p.shape === 'heart') {
         const s = p.size * Math.min(1, p.life * 6);
@@ -80,7 +82,8 @@
   /* Small star burst where something good just happened. */
   C.sparkle = function (x, y, color, radius) {
     const s = Math.max(1, Math.min(W, H) / 520), r = radius || 60 * s;
-    ring(x, y, r * 0.5, r * 1.7, '#ffffff', 10 * s);
+    ring(x, y, r * 0.7, r * 1.8, '#ffffff', 8 * s);
+    ring(x, y, r * 0.5, r * 1.45, color || '#ffd23f', 6 * s);
     /* outlined yellow and white stars thrown well clear of the target, so its face stays visible */
     burst(x, y, amount(16), { min: 380 * s, max: 760 * s, lift: 120, g: 900, drag: 0.94, s0: 9 * s, s1: 16 * s, t0: 0.7, t1: 1.1, shape: 'star', colors: ['#ffd23f', '#ffffff', '#ffd23f', color || '#ffd23f'], line: true });
     burst(x, y, amount(10), { min: 250 * s, max: 600 * s, lift: 80, g: 700, drag: 0.94, s0: 4 * s, s1: 8 * s, t0: 0.5, t1: 0.9, shape: 'dot', color: '#ffffff' });
@@ -121,7 +124,7 @@
   /* Several fireworks over a few seconds. */
   C.fireworks = function (count) {
     for (let i = 0; i < count; i++) {
-      setTimeout(function () { C.firework(U.rand(W * 0.28, W * 0.9), U.rand(H * 0.1, H * 0.42)); if (LG.audio) LG.audio.pop(); }, i * 420);
+      setTimeout(function () { C.firework(U.rand(W * 0.25, W * 0.9), U.rand(H * 0.06, H * 0.26)); if (LG.audio) LG.audio.pop(); }, i * 420);
     }
   };
 })(window.LG);

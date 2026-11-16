@@ -7,7 +7,7 @@
   --white: #f7faff;
   --obj: clamp(96px, 22vmin, 190px);      /* draggable objects and targets */
   --bolt: clamp(92px, 21vmin, 180px);
-  --sticker: clamp(48px, 13vmin, 112px);
+  --sticker: clamp(42px, 10vmin, 88px);
   --spring: cubic-bezier(.3, 1.45, .5, 1);
 }
 @media (orientation: portrait) {
@@ -57,7 +57,7 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .cloud.c3 { top: 1%; left: -30%; animation-duration: 160s; animation-delay: -110s; transform: scale(.85); }
 .tod-2 .cloud { opacity: .35; }
 .hills { position: absolute; left: 0; right: 0; bottom: 0; height: 46%; transition: filter 2.5s ease; }
-.tod-1 .hills { filter: brightness(.86) saturate(1.1) sepia(.22) hue-rotate(-18deg); }
+.tod-1 .hills { filter: hue-rotate(28deg) saturate(1.15) brightness(.84); }
 .tod-2 .hills { filter: brightness(.62) saturate(.9) hue-rotate(28deg); }
 .tod-3 .hills { filter: hue-rotate(12deg) saturate(1.08) brightness(1.03); }
 
@@ -66,17 +66,21 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .sticker {
   position: absolute; width: var(--sticker); aspect-ratio: 1; transform: translate(-50%, -50%);
   transition: left 1s var(--spring), top 1s var(--spring), transform 1s var(--spring), width .9s ease;
-  filter: drop-shadow(0 3px 0 rgba(43, 45, 91, .16));
+  filter: saturate(.92);
 }
 .sticker.ground { transform: translate(-50%, -92%); }
-.sticker.award { width: min(58vmin, 340px); transform: translate(-50%, -50%); z-index: 70; animation: award-in .6s var(--spring) both; }
-.sticker.award.go { animation: none; width: var(--sticker); }
+.sticker.award {
+  width: min(58vmin, 340px); transform: translate(-50%, -50%); z-index: 70; animation: award-in .6s var(--spring) both;
+  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 3px #fff) drop-shadow(0 0 3px #fff) drop-shadow(0 10px 0 rgba(43, 45, 91, .18));
+}
+.sticker.award svg { animation: award-rock 1s ease-in-out infinite; transform-origin: 50% 50%; }
+.sticker.award.go { animation: none; width: var(--sticker); filter: none; }
 .sticker.award.go.ground { transform: translate(-50%, -92%); }
 .sunburst {
   position: absolute; left: 50%; top: 42%; width: min(100vmin, 720px); aspect-ratio: 1; z-index: 68; pointer-events: none;
   border-radius: 50%; translate: -50% -50%;
-  background: repeating-conic-gradient(rgba(255, 255, 255, .85) 0 12deg, rgba(255, 233, 130, .55) 12deg 24deg);
-  -webkit-mask: radial-gradient(circle, #000 25%, transparent 68%); mask: radial-gradient(circle, #000 25%, transparent 68%);
+  background: radial-gradient(circle, #fffbe0 0 22%, transparent 46%), repeating-conic-gradient(rgba(255, 255, 255, .95) 0 12deg, rgba(255, 255, 255, .18) 12deg 24deg);
+  -webkit-mask: radial-gradient(circle, #000 30%, transparent 70%); mask: radial-gradient(circle, #000 30%, transparent 70%);
   animation: burst-spin 14s linear infinite, burst-in .5s ease both; transition: opacity .5s ease;
 }
 .sunburst.out { opacity: 0; }
@@ -94,7 +98,7 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .item.draggable, .item.star { filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 6px 0 rgba(43, 45, 91, .18)); }
 .item.draggable { cursor: grab; touch-action: none; z-index: 20; }
 .item.draggable::before { content: ""; position: absolute; inset: -14px; border-radius: 50%; } /* bigger grab area */
-.item.draggable.dragging { cursor: grabbing; z-index: 50; filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 18px 6px rgba(43, 45, 91, .24)); }
+.item.draggable.dragging { cursor: grabbing; z-index: 50; filter: drop-shadow(0 0 2.5px #fff) drop-shadow(0 0 2.5px #fff) drop-shadow(0 0 2.5px #fff) drop-shadow(0 18px 6px rgba(43, 45, 91, .3)); }
 .item.locked { pointer-events: none; }
 .item-in { width: 100%; height: 100%; animation: pop-in .55s var(--spring) both; }
 .item.draggable .item-in > svg { animation: bob 2.6s ease-in-out infinite; }
@@ -114,6 +118,7 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .animal.fed .eyes-open { display: none; }
 .animal .eyes-open { animation: blink 4.5s infinite; transform-origin: 50% 52%; transform-box: view-box; }
 .animal.hungry .item-in { animation: lean .5s ease-in-out infinite; }
+.animal.hungry { z-index: 15; filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 10px #fff) drop-shadow(0 0 14px #ffd23f); }
 .animal.munch .item-in { animation: munch .25s ease-in-out 3; }
 
 /* ---------- Bolt the robot ---------- */
@@ -151,6 +156,10 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 #bolt.mode-basket .arm { transform-origin: 50% 16%; }
 #bolt.mode-basket .arm-l { transform: rotate(165deg) scaleY(1.35); }
 #bolt.mode-basket .arm-r { transform: rotate(-165deg) scaleY(1.35); }
+#bolt .slide-hint { position: absolute; top: 34%; width: 34%; aspect-ratio: 1; opacity: 0; transition: opacity .3s ease; pointer-events: none; }
+#bolt .slide-hint.l { right: 104%; animation: nudge-l .8s ease-in-out infinite; }
+#bolt .slide-hint.r { left: 104%; animation: nudge-r .8s ease-in-out infinite; }
+#bolt.mode-basket.show-slide .slide-hint { opacity: 1; }
 #bolt .basket.catch { animation: basket-catch .3s var(--spring); }
 
 /* ---------- hint hand, mute ---------- */
@@ -161,7 +170,7 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 #mute {
   position: absolute; right: max(10px, env(safe-area-inset-right)); top: max(10px, env(safe-area-inset-top));
   width: 44px; height: 44px; padding: 8px; border: 0; border-radius: 50%; z-index: 65;
-  background: rgba(255, 255, 255, .85); cursor: pointer;
+  background: #fff; cursor: pointer; box-shadow: 0 0 0 3px rgba(43, 45, 91, .16), 0 4px 0 rgba(43, 45, 91, .16);
 }
 #mute:focus-visible { outline: 3px solid var(--ink); }
 #mute.off .waves { display: none; }
@@ -195,7 +204,10 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 @keyframes bounce { 0% { transform: scale(1); } 30% { transform: scale(1.25, .8); } 60% { transform: scale(.9, 1.15) translateY(-12%); } 100% { transform: none; } }
 @keyframes dance { 0%, 100% { transform: rotate(-8deg) translateY(0); } 50% { transform: rotate(8deg) translateY(-10%); } }
 @keyframes hop { 50% { transform: translateY(-14%) scale(1.04, .97); } }
-@keyframes lean { 50% { transform: scale(1.08); } }
+@keyframes lean { 0%, 100% { transform: scale(1.1); } 50% { transform: scale(1.2); } }
+@keyframes award-rock { 0%, 100% { transform: rotate(-7deg) scale(1); } 50% { transform: rotate(7deg) scale(1.06); } }
+@keyframes nudge-l { 50% { transform: translateX(-35%); } }
+@keyframes nudge-r { 50% { transform: translateX(35%); } }
 @keyframes munch { 50% { transform: scale(1.1, .9); } }
 @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
 @keyframes glow { 50% { transform: scale(1.25); filter: brightness(1.3); } }

@@ -3,7 +3,7 @@
   'use strict';
   const U = LG.util, A = LG.art;
   const R = (LG.robot = {});
-  let el, eyes, basket, homeX = 13;
+  let el, eyes, basket, homeX = 13, moved = 0, lastX = null;
 
   function art() {
     const S = A.STROKE, INK = A.INK;
@@ -35,7 +35,9 @@
   }
 
   R.init = function (stage) {
-    el = U.el('div', '', '<div class="bolt-in">' + art() + '</div><div class="basket">' + basketArt() + '</div>');
+    const chev = (d) => A.svg('<path d="' + d + '" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="' + d + '" fill="none" stroke="' + A.INK + '" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>');
+    el = U.el('div', '', '<div class="bolt-in">' + art() + '</div><div class="basket">' + basketArt() + '</div>' +
+      '<div class="slide-hint l">' + chev('M64 22 L34 50 L64 78') + '</div><div class="slide-hint r">' + chev('M36 22 L66 50 L36 78') + '</div>');
     el.id = 'bolt';
     stage.appendChild(el);
     eyes = el.querySelector('.look');
@@ -67,12 +69,18 @@
   R.react = function (type, ms) { U.react(el, type, ms || 1000); };
   R.setMode = function (mode) {
     el.classList.toggle('mode-basket', mode === 'basket');
+    /* arrows either side show Bolt can slide, until the child has moved it a little */
+    el.classList.toggle('show-slide', mode === 'basket');
+    moved = 0; lastX = null;
     if (mode !== 'basket') R.home();
   };
   /* Slide Bolt horizontally to a viewport x (pixels); used by Catch the stars. */
   R.moveTo = function (x) {
     const half = el.offsetWidth / 2;
     el.classList.remove('slow');
+    if (lastX != null) moved += Math.abs(x - lastX);
+    lastX = x;
+    if (moved > window.innerWidth * 0.5) el.classList.remove('show-slide');
     el.style.left = U.clamp(x, half, window.innerWidth - half) + 'px';
   };
   R.home = function () { el.classList.add('slow'); el.style.left = homeX + '%'; };

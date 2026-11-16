@@ -21,13 +21,15 @@
   const shine = (x, y, rx, ry, rot) =>
     '<ellipse cx="' + x + '" cy="' + y + '" rx="' + rx + '" ry="' + ry + '" fill="#fff" opacity=".45" transform="rotate(' + (rot || 0) + ' ' + x + ' ' + y + ')"/>';
   /* Small friendly face: two eyes with highlights and a smile. */
-  const face = (cx, cy, s) => {
+  /* blush: pass a darker shade of the body colour so cheeks never turn grey */
+  const face = (cx, cy, s, blush) => {
     s = s || 1;
+    const bf = 'fill="' + (blush || '#ff7eb6') + '" opacity="' + (blush ? '.6' : '.55') + '"';
     const e = (x) => '<circle cx="' + x + '" cy="' + cy + '" r="' + 4 * s + '" fill="' + INK + '"/><circle cx="' + (x - 1.3 * s) + '" cy="' + (cy - 1.4 * s) + '" r="' + 1.4 * s + '" fill="#fff"/>';
     return e(cx - 10 * s) + e(cx + 10 * s) +
       '<path d="M' + (cx - 7 * s) + ' ' + (cy + 8 * s) + ' Q' + cx + ' ' + (cy + 15 * s) + ' ' + (cx + 7 * s) + ' ' + (cy + 8 * s) + '" fill="none" ' + S + ' stroke-width="3"/>' +
-      '<circle cx="' + (cx - 17 * s) + '" cy="' + (cy + 7 * s) + '" r="' + 3.5 * s + '" fill="#ff7eb6" opacity=".55"/>' +
-      '<circle cx="' + (cx + 17 * s) + '" cy="' + (cy + 7 * s) + '" r="' + 3.5 * s + '" fill="#ff7eb6" opacity=".55"/>';
+      '<circle cx="' + (cx - 17 * s) + '" cy="' + (cy + 7 * s) + '" r="' + 3.5 * s + '" ' + bf + '/>' +
+      '<circle cx="' + (cx + 17 * s) + '" cy="' + (cy + 7 * s) + '" r="' + 3.5 * s + '" ' + bf + '/>';
   };
   A.face = face; A.shine = shine;
 
@@ -61,7 +63,7 @@
       shine(26, 40, 5, 9, 30) +
       '<g class="eyes-open">' + eye(50 - eyeX) + eye(50 + eyeX) + '</g>' +
       '<g class="eyes-happy">' + happy(50 - eyeX) + happy(50 + eyeX) + '</g>' +
-      '<circle cx="23" cy="66" r="6.5" fill="#ff7eb6" opacity=".6"/><circle cx="77" cy="66" r="6.5" fill="#ff7eb6" opacity=".6"/>' +
+      '<circle cx="23" cy="66" r="6.5" fill="' + c.d + '" opacity=".6"/><circle cx="77" cy="66" r="6.5" fill="' + c.d + '" opacity=".6"/>' +
       whiskers + nose +
       '<path class="mouth-closed" d="' + smile + '" fill="none" ' + S + ' stroke-width="3.5"/>' +
       '<g class="mouth-open"><ellipse cx="50" cy="76" rx="11" ry="10" fill="#7a2b4f" ' + S + ' stroke-width="3"/><ellipse cx="50" cy="81" rx="6" ry="4" fill="#ff7e9e"/></g>'
@@ -73,20 +75,20 @@
   const stem = (x, y) => '<path d="M' + x + ' ' + y + ' q0 -10 5 -15" fill="none" stroke="#8a5a3c" stroke-width="5" stroke-linecap="round"/>';
   const FRUIT = {
     apple: () => stem(50, 30) + leaf(55, 20, -10) +
-      '<path d="M50 30 C38 20 13 26 13 53 C13 77 32 93 50 87 C68 93 87 77 87 53 C87 26 62 20 50 30Z" fill="#ff5a5f" ' + S + '/>' + shine(30, 48, 6, 11, 20) + face(50, 56),
+      '<path d="M50 30 C38 20 13 26 13 53 C13 77 32 93 50 87 C68 93 87 77 87 53 C87 26 62 20 50 30Z" fill="#ff5a5f" ' + S + '/>' + shine(30, 48, 6, 11, 20) + face(50, 56, 1, '#d93a40'),
     banana: () => '<path d="M13 32 C15 74 54 98 90 76 C94 72 91 63 85 63 C66 66 49 52 40 27 C36 16 12 19 13 32Z" fill="#ffd23f" ' + S + '/>' +
       '<path d="M16 28 C15 21 34 19 38 25" fill="none" stroke="#8a5a3c" stroke-width="5" stroke-linecap="round"/>' +
       '<path d="M22 40 C24 50 28 58 34 65" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"/>' +
-      '<g transform="rotate(30 52 68)">' + face(52, 66, 0.6) + '</g>',
+      '<g transform="rotate(30 52 68)">' + face(52, 66, 0.72, '#e8b106') + '</g>',
     grapes: () => stem(50, 24) + leaf(54, 16, -5) +
       [[30, 38], [50, 35], [70, 38], [36, 56], [64, 56], [50, 76]].map((p) => '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="13.5" fill="#9b6bff" ' + S + '/><circle cx="' + (p[0] - 4) + '" cy="' + (p[1] - 4) + '" r="3" fill="#fff" opacity=".5"/>').join('') +
-      '<circle cx="50" cy="54" r="17" fill="#9b6bff" ' + S + '/><circle cx="43" cy="46" r="3.5" fill="#fff" opacity=".5"/>' + face(50, 53, 0.6),
-    orange: () => '<circle cx="50" cy="55" r="36" fill="#ff9f1c" ' + S + '/>' + leaf(50, 20, -15) + shine(31, 42, 6, 11, 30) + face(50, 56) +
+      '<circle cx="50" cy="54" r="17" fill="#9b6bff" ' + S + '/><circle cx="43" cy="46" r="3.5" fill="#fff" opacity=".5"/>' + face(50, 53, 0.6, '#7445e0'),
+    orange: () => '<circle cx="50" cy="55" r="36" fill="#ff9f1c" ' + S + '/>' + leaf(50, 20, -15) + shine(31, 42, 6, 11, 30) + face(50, 56, 1, '#e07f00') +
       '<circle cx="66" cy="34" r="1.5" fill="#e07f00"/><circle cx="74" cy="46" r="1.5" fill="#e07f00"/><circle cx="30" cy="76" r="1.5" fill="#e07f00"/>',
     pear: () => stem(50, 16) + leaf(55, 8, 5) +
-      '<path d="M50 14 C39 14 37 26 37 36 C37 47 20 52 20 71 C20 85 35 93 50 93 C65 93 80 85 80 71 C80 52 63 47 63 36 C63 26 61 14 50 14Z" fill="#3ddc84" ' + S + '/>' + shine(33, 66, 5, 10, 15) + face(50, 64),
+      '<path d="M50 14 C39 14 37 26 37 36 C37 47 20 52 20 71 C20 85 35 93 50 93 C65 93 80 85 80 71 C80 52 63 47 63 36 C63 26 61 14 50 14Z" fill="#3ddc84" ' + S + '/>' + shine(33, 66, 5, 10, 15) + face(50, 64, 1, '#1fb564'),
     blueberry: () => '<circle cx="50" cy="55" r="36" fill="#3fa9f5" ' + S + '/>' +
-      '<path d="M40 24 L45 30 L50 22 L55 30 L60 24 L58 34 H42Z" fill="#1c82cf" ' + S + ' stroke-width="3"/>' + shine(30, 44, 6, 11, 30) + face(50, 58),
+      '<path d="M40 24 L45 30 L50 22 L55 30 L60 24 L58 34 H42Z" fill="#1c82cf" ' + S + ' stroke-width="3"/>' + shine(30, 44, 6, 11, 30) + face(50, 58, 1, '#1c82cf'),
   };
   A.FRUIT_FOR = { red: 'apple', yellow: 'banana', purple: 'grapes', orange: 'orange', green: 'pear', blue: 'blueberry' };
   A.fruit = (name) => svg(FRUIT[name]());
@@ -103,7 +105,7 @@
   const SHAPES = {
     circle: { d: 'M50 12 a38 38 0 1 0 0.01 0Z', fy: 50 },
     square: { d: 'M26 14 H74 Q86 14 86 26 V74 Q86 86 74 86 H26 Q14 86 14 74 V26 Q14 14 26 14Z', fy: 50 },
-    triangle: { d: 'M50 14 L89 82 H11Z', fy: 60 },
+    triangle: { d: 'M50 13 Q55 13 58 18 L90 73 Q95 83 84 83 H16 Q5 83 10 73 L42 18 Q45 13 50 13Z', fy: 60 },
     star: { d: starPath(50, 53, 44, 23), fy: 53 },
     heart: { d: 'M50 87 C18 64 8 45 13 31 C18 16 39 13 50 30 C61 13 82 16 87 31 C92 45 82 64 50 87Z', fy: 46 },
   };
@@ -118,12 +120,12 @@
     }
     return svg('<path d="' + s.d + '" fill="' + c.b + '" ' + S + ' stroke-width="5"/>' +
       '<path d="' + s.d + '" fill="none" stroke="' + c.l + '" stroke-width="3" stroke-linejoin="round" opacity=".7" transform="translate(50 50) scale(.78) translate(-50 -50)"/>' +
-      face(50, s.fy, 0.9));
+      face(50, s.fy, 0.9, c.d));
   };
   /* A falling star with a face (Catch the stars). */
   A.star = function (color) {
     const c = COLORS[color || 'yellow'];
-    return svg('<path d="' + starPath(50, 53, 44, 24) + '" fill="' + c.b + '" ' + S + ' stroke-width="5"/>' + shine(36, 36, 4, 8, 35) + face(50, 54, 0.9));
+    return svg('<path d="' + starPath(50, 53, 44, 24) + '" fill="' + c.b + '" ' + S + ' stroke-width="5"/>' + shine(36, 36, 4, 8, 35) + face(50, 54, 0.9, c.d));
   };
 
   /* ---------- stickers. zone: 'ground' (grows on the grass) or 'sky' ---------- */
@@ -159,8 +161,9 @@
         return svg('<path d="M50 50 C30 10 4 20 12 44 C16 56 34 56 50 50Z M50 50 C70 10 96 20 88 44 C84 56 66 56 50 50Z" fill="' + c.b + '" ' + S + '/>' +
           '<path d="M50 52 C34 54 18 62 26 78 C34 90 46 76 50 52Z M50 52 C66 54 82 62 74 78 C66 90 54 76 50 52Z" fill="' + c.l + '" ' + S + '/>' +
           '<circle cx="28" cy="36" r="6" fill="#ffd23f"/><circle cx="72" cy="36" r="6" fill="#ffd23f"/>' +
-          '<path d="M46 26 Q42 14 36 14 M54 26 Q58 14 64 14" fill="none" ' + S + ' stroke-width="3"/>' +
-          '<ellipse cx="50" cy="50" rx="6.5" ry="24" fill="' + INK + '"/>');
+          '<path d="M45 23 Q42 12 36 12 M55 23 Q58 12 64 12" fill="none" ' + S + ' stroke-width="3"/>' +
+          '<ellipse cx="50" cy="56" rx="6" ry="20" fill="' + c.d + '" ' + S + ' stroke-width="3"/>' +
+          '<circle cx="50" cy="32" r="11" fill="' + c.l + '" ' + S + ' stroke-width="3.5"/>' + face(50, 30, 0.42, c.d));
       },
     },
     rainbow: {

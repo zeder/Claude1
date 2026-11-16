@@ -6,8 +6,8 @@
   const ORDER = ['feed', 'shapes', 'stars'];
   /* Sticker slots in percent of the stage: ground = base of the sticker. */
   const SLOTS = {
-    ground: [[36, 97], [48, 99.5], [60, 96.5], [72, 99.5], [84, 97], [94, 99.5]],
-    sky: [[33, 8], [48, 5.5], [62, 9], [76, 6]],
+    ground: [[36, 96], [48, 97.5], [60, 95.5], [72, 97.5], [84, 96], [94, 97.5]],
+    sky: [[33, 11], [48, 9], [62, 12], [76, 9.5]],
   };
   const stage = document.getElementById('stage');
   const play = document.getElementById('play');
@@ -40,8 +40,8 @@
     bg.innerHTML =
       '<div class="sky-layer sky-0"></div><div class="sky-layer sky-1"></div><div class="sky-layer sky-2"></div><div class="sky-layer sky-3"></div>' +
       '<div class="night-stars">' + stars + '</div>' +
-      '<div class="sun">' + A.sun() + '</div><div class="moon">' + A.moon() + '</div>' +
       '<div class="cloud c1">' + A.cloud() + '</div><div class="cloud c2">' + A.cloud() + '</div><div class="cloud c3">' + A.cloud() + '</div>' +
+      '<div class="sun">' + A.sun() + '</div><div class="moon">' + A.moon() + '</div>' +
       '<div class="hills">' + A.hills() + '</div>';
   }
   function setTod(n) {
@@ -95,7 +95,12 @@
     LG.robot.react('point', U.ms(2000)); LG.robot.react('happy', U.ms(2000));
     LG.audio.sticker();
     LG.celebrate.sparkle(window.innerWidth / 2, window.innerHeight * 0.42, '#ffd23f', Math.min(window.innerWidth, window.innerHeight) * 0.24);
-    await U.wait(2000);
+    LG.celebrate.confetti();
+    LG.robot.react('clap', 900);
+    /* twinkles around the prize while it is held up */
+    const cx = window.innerWidth / 2, cy = window.innerHeight * 0.42, rr = Math.min(window.innerWidth, window.innerHeight) * 0.3;
+    for (let i = 1; i <= 5; i++) setTimeout(function () { const a = Math.random() * 6.28; LG.celebrate.sparkle(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, '#ffd23f', rr * 0.2); }, U.ms(i * 330));
+    await U.wait(2200);
     burst.classList.add('out');
     U.place(el, slot[0], slot[1]);
     el.classList.add('go');
@@ -148,7 +153,7 @@
     /* How many things fit comfortably in one row. */
     count: () => (portrait() ? 3 : 4),
     /* Play area in percent of the stage, clear of Bolt, the sun and the mute button. */
-    zone: () => (portrait() ? { x0: 5, x1: 95, y0: 15, y1: 78 } : { x0: 22, x1: 96, y0: 16, y1: 86 }),
+    zone: () => (portrait() ? { x0: 5, x1: 95, y0: 15, y1: 78 } : { x0: 22, x1: 94, y0: 16, y1: 84 }),
     /* One correct move: note, sparkle, Bolt cheers. */
     success: function (el, color) {
       const c = U.center(el);
@@ -207,6 +212,8 @@
     const w = hand.offsetWidth, t = (p) => 'translate(' + (p.x - w * 0.5) + 'px,' + (p.y - 4) + 'px)';
     const inner = h.from.querySelector('.item-in');
     if (inner) U.react(inner, 'wiggle', 1500);
+    const tin = h.to && h.to.querySelector('.item-in');
+    if (tin) setTimeout(() => U.react(tin, 'bounce', 600), 1300);
     LG.robot.react('point', 1600);
     LG.audio.beep();
     const anim = hand.animate([
