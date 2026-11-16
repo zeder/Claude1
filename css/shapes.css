@@ -1,0 +1,20 @@
+/* Shape homes */
+.shape-board {
+  position: absolute; z-index: 5; transform: translate(-50%, -50%);
+  height: calc(var(--obj) * 1.45); max-width: 100%;
+  background: rgba(255, 255, 255, .62); border-radius: calc(var(--obj) * .5);
+  box-shadow: 0 8px 0 rgba(43, 45, 91, .14), 0 14px 28px rgba(43, 45, 91, .12);
+  pointer-events: none;
+  animation: board-in .5s var(--spring) both;
+}
+.item.hole { z-index: 8; filter: none; }
+.item.hole .item-in { transition: transform .25s var(--spring); }
+.item.hole.ready .item-in > svg { animation: hole-pulse .7s ease-in-out infinite; }
+.item.hole.ready { filter: drop-shadow(0 0 14px rgba(255, 255, 255, .95)) drop-shadow(0 0 6px #ffd23f); }
+.item.hole.filled { filter: none; }
+.item.hole.filled .item-in { opacity: 0; }
+.item.piece.placed .item-in > svg { animation: none; }
+.item.piece.placed { z-index: 12; }
+
+@keyframes board-in { from { transform: translate(-50%, -50%) scale(.6); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; } }
+@keyframes hole-pulse { 50% { transform: scale(1.12); } }
