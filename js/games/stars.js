@@ -81,7 +81,7 @@
     s.el.style.top = (m.y + 6) + 'px';
     later(function () { remove(s); }, 450);
     ctx.robot.catchBounce();
-    ctx.success(ctx.robot.el(), s.color);
+    ctx.success(ctx.robot.basketEl(), s.color);
     const slot = slots[caught];
     caught++;
     if (slot) { slot.classList.add('full'); }
@@ -149,7 +149,7 @@
     if (!meter) return;
     const z = ctx.zone();
     meter.style.left = (z.x0 + z.x1) / 2 + '%';
-    meter.style.top = z.y0 + '%';
+    meter.style.top = z.y0 + 7 + '%';
   }
 
   function hint() {

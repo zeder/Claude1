@@ -38,7 +38,7 @@
       stars += '<i style="left:' + U.rand(2, 98).toFixed(1) + '%;top:' + U.rand(2, 96).toFixed(1) + '%;animation-delay:-' + U.rand(0, 3).toFixed(1) + 's"></i>';
     }
     bg.innerHTML =
-      '<div class="sky sky-0"></div><div class="sky sky-1"></div><div class="sky sky-2"></div><div class="sky sky-3"></div>' +
+      '<div class="sky-layer sky-0"></div><div class="sky-layer sky-1"></div><div class="sky-layer sky-2"></div><div class="sky-layer sky-3"></div>' +
       '<div class="night-stars">' + stars + '</div>' +
       '<div class="sun">' + A.sun() + '</div><div class="moon">' + A.moon() + '</div>' +
       '<div class="cloud c1">' + A.cloud() + '</div><div class="cloud c2">' + A.cloud() + '</div><div class="cloud c3">' + A.cloud() + '</div>' +
@@ -72,7 +72,9 @@
     const s = { type: U.pick(fresh.length ? fresh : types), color: U.pick(Object.keys(A.COLORS)), zone: zone, slot: 0 };
     const used = state.stickers.filter((x) => x.zone === zone).map((x) => x.slot);
     const free = SLOTS[zone].map((_, i) => i).filter((i) => used.indexOf(i) < 0);
-    if (free.length) s.slot = U.pick(free);
+    /* spread out: fill alternate slots first */
+    const spreadOrder = SLOTS[zone].map((_, i) => i).sort((a, b) => (a % 2) - (b % 2) || a - b);
+    if (free.length) s.slot = spreadOrder.find((i) => free.indexOf(i) >= 0);
     else {
       const oldest = state.stickers.findIndex((x) => x.zone === zone);
       s.slot = state.stickers[oldest].slot;
@@ -83,19 +85,26 @@
     save();
 
     /* Bolt holds it up, then it flies to its place in the garden. */
-    const el = stickerEl(s), slot = SLOTS[zone][s.slot], c = LG.robot.center();
-    U.place(el, (c.x / window.innerWidth) * 100, ((c.y - c.r * 1.6) / window.innerHeight) * 100);
-    el.classList.add('flying');
-    stickerLayer.appendChild(el);
-    LG.robot.react('point', 1500); LG.robot.react('happy', 1500);
+    /* The prize is shown big in the middle on a sunburst, then flies to its place in the garden. */
+    const el = stickerEl(s), slot = SLOTS[zone][s.slot];
+    const burst = U.el('div', 'sunburst');
+    play.classList.add('leaving');
+    U.place(el, 50, 42);
+    el.classList.add('award');
+    stage.appendChild(burst); stage.appendChild(el);
+    LG.robot.react('point', U.ms(2000)); LG.robot.react('happy', U.ms(2000));
     LG.audio.sticker();
-    await U.wait(1100);
+    LG.celebrate.sparkle(window.innerWidth / 2, window.innerHeight * 0.42, '#ffd23f', Math.min(window.innerWidth, window.innerHeight) * 0.24);
+    await U.wait(2000);
+    burst.classList.add('out');
     U.place(el, slot[0], slot[1]);
-    el.classList.remove('flying');
-    await U.wait(900);
+    el.classList.add('go');
+    await U.wait(1000);
     const r = el.getBoundingClientRect();
     LG.celebrate.sparkle(r.left + r.width / 2, r.top + r.height / 2, '#ffd23f');
     LG.audio.pop();
+    burst.remove(); el.remove();
+    renderStickers();
     await U.wait(500);
   }
 
@@ -103,19 +112,31 @@
   async function parade() {
     const rainbow = U.el('div', 'parade-rainbow', A.bigRainbow());
     stage.insertBefore(rainbow, stickerLayer);
+    play.classList.add('leaving');
+    /* the animal friends march across in front of the rainbow, Bolt leads from the middle */
+    const walkers = U.shuffle(Object.keys(A.FRUIT_FOR)).slice(0, 5).map(function (color, i) {
+      const w = U.el('div', 'parade-walker animal fed', '<div>' + A.animal(['bear', 'bunny', 'cat', 'frog'][i % 4], color) + '</div>');
+      w.style.animationDelay = 500 + i * 620 + 'ms';
+      w.firstChild.style.animationDelay = -i * 130 + 'ms';
+      stage.insertBefore(w, stickerLayer);
+      return w;
+    });
+    LG.robot.el().classList.add('parade');
     stickerLayer.classList.add('party');
     Array.from(stickerLayer.children).forEach((e) => e.classList.add('party'));
     LG.audio.fanfare();
     LG.celebrate.fireworks(9);
     LG.celebrate.confetti();
     LG.robot.react('spin', 900);
-    setTimeout(() => LG.robot.react('dance', 3600), 950);
-    LG.robot.react('happy', 4600);
+    setTimeout(() => LG.robot.react('dance', 5600), 950);
+    LG.robot.react('happy', 6600);
     if (game && game.cheer) game.cheer();
     await U.wait(2400);
     setTod(state.tod + 1); save();
-    await U.wait(2600);
+    await U.wait(4400);
     rainbow.remove();
+    walkers.forEach((w) => w.remove());
+    LG.robot.el().classList.remove('parade');
     Array.from(stickerLayer.children).forEach((e) => e.classList.remove('party'));
   }
 
@@ -127,10 +148,11 @@
     /* How many things fit comfortably in one row. */
     count: () => (portrait() ? 3 : 4),
     /* Play area in percent of the stage, clear of Bolt, the sun and the mute button. */
-    zone: () => (portrait() ? { x0: 6, x1: 94, y0: 16, y1: 78 } : { x0: 22, x1: 96, y0: 14, y1: 90 }),
+    zone: () => (portrait() ? { x0: 5, x1: 95, y0: 15, y1: 78 } : { x0: 22, x1: 96, y0: 16, y1: 86 }),
     /* One correct move: note, sparkle, Bolt cheers. */
     success: function (el, color) {
       const c = U.center(el);
+      if (el.classList.contains('basket')) c.y -= c.r * 1.3;   // keep the burst off Bolt's face
       LG.audio.success(progress++);
       LG.celebrate.sparkle(c.x, c.y, (A.COLORS[color] || A.COLORS.yellow).b);
       LG.robot.react('clap', 900); LG.robot.react('happy', 900);
@@ -149,7 +171,8 @@
         progress = 0;
         document.body.dataset.game = name;
         game.start(ctx);
-        lastAction = Date.now();
+        /* brand-new players get the hand demo almost straight away */
+        lastAction = Date.now() - (state.rounds < 3 ? 3800 : 0);
         return;
       }
     }

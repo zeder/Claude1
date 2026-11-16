@@ -1,9 +1,9 @@
 /* Shape homes */
 .shape-board {
   position: absolute; z-index: 5; transform: translate(-50%, -50%);
-  height: calc(var(--obj) * 1.45); max-width: 100%;
-  background: rgba(255, 255, 255, .62); border-radius: calc(var(--obj) * .5);
-  box-shadow: 0 8px 0 rgba(43, 45, 91, .14), 0 14px 28px rgba(43, 45, 91, .12);
+  height: calc(var(--obj) * 1.42); max-width: 100%;
+  background: #fbfdff; border: 5px solid #fff; border-radius: calc(var(--obj) * .42);
+  box-shadow: 0 0 0 3px rgba(43, 45, 91, .16), 0 10px 0 rgba(43, 45, 91, .16), 0 18px 30px rgba(43, 45, 91, .14);
   pointer-events: none;
   animation: board-in .5s var(--spring) both;
 }

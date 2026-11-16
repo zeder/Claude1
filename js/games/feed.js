@@ -14,7 +14,9 @@
   function start(c) {
     ctx = c;
     const n = ctx.count();
-    const colors = U.shuffle(Object.keys(A.FRUIT_FOR)).slice(0, n);
+    /* yellow and orange are too alike for a three-year-old: never deal both */
+    const pool = Object.keys(A.FRUIT_FOR).filter((k) => k !== (Math.random() < 0.5 ? 'yellow' : 'orange'));
+    const colors = U.shuffle(pool).slice(0, n);
     const kinds = U.shuffle(KINDS);
 
     animals = colors.map(function (color, i) {
@@ -32,8 +34,8 @@
       ctx.layer.appendChild(el);
       const f = { el: el, color: color, done: false };
       f.handle = D.make(el, {
-        onStart: function () { LG.audio.grab(); },
-        onMove: function (p) { setHungry(nearest(p)); },
+        /* the friend who wants this fruit opens wide as soon as it is picked up */
+        onStart: function () { LG.audio.grab(); setHungry(animals.find((a) => a.color === color)); },
         onDrop: function (p) {
           const a = nearest(p);
           setHungry(null);
@@ -65,13 +67,15 @@
     U.react(a.el, 'munch', 800);
     LG.audio.munch();
     ctx.success(a.el, a.color);
+    const c = U.center(a.el);
+    LG.celebrate.heart(c.x, c.y - c.r * 1.1);
     if (animals.every((x) => x.fed)) ctx.complete();
   }
 
   function layout() {
     const z = ctx.zone(), h = z.y1 - z.y0;
     const xs = U.spread(animals.length, z.x0, z.x1);
-    animals.forEach((a, i) => U.place(a.el, xs[i], z.y0 + h * (i % 2 ? 0.3 : 0.24)));
+    animals.forEach((a, i) => U.place(a.el, xs[i], z.y0 + h * 0.24));
     fruits.forEach((f, i) => U.place(f.el, xs[i], z.y0 + h * 0.84));
   }
   function hint() {

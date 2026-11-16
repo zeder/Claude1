@@ -10,8 +10,8 @@
       const c = COLORS[color || 'pink'];
       return svg('<path d="M50 58 V96" fill="none" stroke="#1fb564" stroke-width="6" stroke-linecap="round"/>' +
         '<path d="M50 80 q-22 -10 -26 6 q16 8 26 -6Z M50 70 q20 -12 26 4 q-14 8 -26 -4Z" fill="#3ddc84" ' + S + ' stroke-width="3"/>' +
-        '<path d="M30 22 L40 40 L50 28 L60 40 L70 22 C72 46 64 60 50 60 C36 60 28 46 30 22Z" fill="' + c.b + '" ' + S + '/>' +
-        shine(38, 36, 3, 7, 20) + face(50, 42, 0.5));
+        '<path d="M50 62 C32 62 26 46 30 26 C31 20 37 18 41 24 L44 30 C45 22 47 16 50 14 C53 16 55 22 56 30 L59 24 C63 18 69 20 70 26 C74 46 68 62 50 62Z" fill="' + c.b + '" ' + S + '/>' +
+        shine(37, 40, 3, 7, 15) + face(50, 46, 0.5));
     },
   };
 
@@ -41,13 +41,13 @@
         const t = (i / 60) * 4.5 * Math.PI, r = 1 + (18 * i) / 60;
         spiral += ' L' + (58 + Math.cos(t) * r).toFixed(1) + ' ' + (56 + Math.sin(t) * r).toFixed(1);
       }
-      return svg('<path d="M8 84 Q8 74 20 74 H76 Q92 74 92 84 V88 Q92 94 84 94 H16 Q8 94 8 88Z" fill="#fff4e0" ' + S + '/>' +
-        '<path d="M18 76 Q14 66 14 52 M28 76 Q28 66 28 52" fill="none" ' + S + ' stroke-width="3"/>' +
-        '<circle cx="14" cy="49" r="5" fill="#fff" ' + S + ' stroke-width="3"/><circle cx="28" cy="49" r="5" fill="#fff" ' + S + ' stroke-width="3"/>' +
-        '<circle cx="14" cy="50" r="2" fill="' + INK + '"/><circle cx="28" cy="50" r="2" fill="' + INK + '"/>' +
+      return svg('<path d="M24 60 V44 M36 60 V46" fill="none" ' + S + ' stroke-width="3.5"/>' +
+        '<circle cx="24" cy="42" r="5" fill="#fff4e0" ' + S + ' stroke-width="3"/><circle cx="36" cy="44" r="5" fill="#fff4e0" ' + S + ' stroke-width="3"/>' +
+        '<path d="M12 78 C12 62 22 56 30 56 C40 56 44 66 44 76 H80 C90 76 94 84 90 90 C88 94 84 94 80 94 H26 C16 94 12 88 12 78Z" fill="#fff4e0" ' + S + '/>' +
+        face(29, 72, 0.6) +
         '<circle cx="58" cy="56" r="24" fill="' + c.b + '" ' + S + '/>' +
         '<path d="' + spiral + '" fill="none" stroke="' + c.d + '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
-        face(44, 84, 0.5));
+        '<circle cx="24" cy="42" r="2" fill="' + INK + '"/><circle cx="36" cy="44" r="2" fill="' + INK + '"/>');
     },
   };
 

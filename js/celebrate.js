@@ -30,6 +30,9 @@
     }
     g.closePath(); g.fill();
   }
+  function ring(x, y, r0, r1, color, w) {
+    add({ x: x, y: y, vx: 0, vy: 0, g: 0, drag: 1, rot: 0, vr: 0, size: w, color: color, shape: 'ring', r0: r0, r1: r1, life: 0, max: 0.55 });
+  }
   function tick(now) {
     const dt = Math.min((now - last) / 1000, 0.05); last = now;
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -44,7 +47,16 @@
       g.globalAlpha = fade;
       g.translate(p.x, p.y); g.rotate(p.rot);
       g.fillStyle = p.color;
-      if (p.shape === 'star') star(p.size);
+      if (p.shape === 'ring') {
+        g.globalAlpha = fade * 0.9; g.strokeStyle = p.color; g.lineWidth = p.size * (1 - p.life / p.max) + 1;
+        g.beginPath(); g.arc(0, 0, p.r0 + (p.r1 - p.r0) * Math.sqrt(p.life / p.max), 0, 7); g.stroke();
+      } else if (p.shape === 'heart') {
+        const s = p.size * Math.min(1, p.life * 6);
+        g.beginPath(); g.moveTo(0, s * 0.9);
+        g.bezierCurveTo(-s * 1.6, -s * 0.2, -s * 0.7, -s * 1.3, 0, -s * 0.45);
+        g.bezierCurveTo(s * 0.7, -s * 1.3, s * 1.6, -s * 0.2, 0, s * 0.9);
+        g.fill(); g.lineWidth = Math.max(2, s * 0.18); g.strokeStyle = '#2b2d5b'; g.lineJoin = 'round'; g.stroke();
+      } else if (p.shape === 'star') { star(p.size); if (p.line) { g.lineWidth = 2.5; g.strokeStyle = '#2b2d5b'; g.lineJoin = 'round'; g.stroke(); } }
       else if (p.shape === 'dot') { g.beginPath(); g.arc(0, 0, p.size * 0.6, 0, 7); g.fill(); }
       else { g.scale(1, Math.cos(p.life * p.flip)); g.fillRect(-p.size * 0.7, -p.size * 0.4, p.size * 1.4, p.size * 0.8); }
       g.restore();
@@ -59,16 +71,24 @@
       add({
         x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - (opt.lift || 0),
         g: opt.g, drag: opt.drag || 0.985, rot: U.rand(0, 6), vr: U.rand(-8, 8), flip: U.rand(6, 14),
-        size: U.rand(opt.s0, opt.s1), color: opt.color || U.pick(COLORS),
+        size: U.rand(opt.s0, opt.s1), color: opt.colors ? U.pick(opt.colors) : opt.color || U.pick(COLORS), line: opt.line,
         shape: opt.shape || U.pick(['rect', 'rect', 'dot', 'star']), life: 0, max: U.rand(opt.t0, opt.t1),
       });
     }
   }
 
   /* Small star burst where something good just happened. */
-  C.sparkle = function (x, y, color) {
-    burst(x, y, amount(14), { min: 120, max: 420, lift: 80, g: 500, s0: 6, s1: 13, t0: 0.5, t1: 0.9, shape: 'star', color: color });
-    burst(x, y, amount(8), { min: 80, max: 300, lift: 60, g: 400, s0: 4, s1: 8, t0: 0.4, t1: 0.8, shape: 'dot', color: '#ffffff' });
+  C.sparkle = function (x, y, color, radius) {
+    const s = Math.max(1, Math.min(W, H) / 520), r = radius || 60 * s;
+    ring(x, y, r * 0.5, r * 1.7, '#ffffff', 10 * s);
+    /* outlined yellow and white stars thrown well clear of the target, so its face stays visible */
+    burst(x, y, amount(16), { min: 380 * s, max: 760 * s, lift: 120, g: 900, drag: 0.94, s0: 9 * s, s1: 16 * s, t0: 0.7, t1: 1.1, shape: 'star', colors: ['#ffd23f', '#ffffff', '#ffd23f', color || '#ffd23f'], line: true });
+    burst(x, y, amount(10), { min: 250 * s, max: 600 * s, lift: 80, g: 700, drag: 0.94, s0: 4 * s, s1: 8 * s, t0: 0.5, t1: 0.9, shape: 'dot', color: '#ffffff' });
+  };
+  /* A little heart floating up (a fed animal says thank you). */
+  C.heart = function (x, y) {
+    const s = Math.max(1, Math.min(W, H) / 520);
+    add({ x: x, y: y, vx: U.rand(-20, 20), vy: -150 * s, g: -40, drag: 0.99, rot: 0, vr: 0, size: 15 * s, color: '#ff7eb6', shape: 'heart', life: 0, max: 1.3 });
   };
   /* Round finished: two cannons from the bottom corners plus a shower. */
   C.confetti = function () {
@@ -92,14 +112,16 @@
     }
   };
   C.firework = function (x, y) {
-    const s = Math.max(1, Math.min(W, H) / 500), color = U.pick(COLORS);
-    burst(x, y, amount(46), { min: 150 * s, max: 520 * s, g: 320, drag: 0.97, s0: 6 * s, s1: 12 * s, t0: 0.9, t1: 1.6, shape: 'star', color: color });
+    const s = Math.max(1, Math.min(W, H) / 500), a = Math.floor(U.rand(0, COLORS.length));
+    const trio = [COLORS[a], COLORS[(a + 3) % COLORS.length], '#ffd23f', '#ffffff'];
+    ring(x, y, 10, 110 * s, '#ffffff', 5 * s);
+    burst(x, y, amount(46), { min: 150 * s, max: 520 * s, g: 320, drag: 0.97, s0: 6 * s, s1: 12 * s, t0: 0.9, t1: 1.6, shape: 'star', colors: trio });
     burst(x, y, amount(24), { min: 60 * s, max: 300 * s, g: 260, drag: 0.97, s0: 4 * s, s1: 8 * s, t0: 0.8, t1: 1.3, shape: 'dot' });
   };
   /* Several fireworks over a few seconds. */
   C.fireworks = function (count) {
     for (let i = 0; i < count; i++) {
-      setTimeout(function () { C.firework(U.rand(W * 0.12, W * 0.88), U.rand(H * 0.12, H * 0.5)); if (LG.audio) LG.audio.pop(); }, i * 420);
+      setTimeout(function () { C.firework(U.rand(W * 0.28, W * 0.9), U.rand(H * 0.1, H * 0.42)); if (LG.audio) LG.audio.pop(); }, i * 420);
     }
   };
 })(window.LG);

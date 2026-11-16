@@ -51,6 +51,7 @@
     R.layout();
   };
   R.el = () => el;
+  R.basketEl = () => basket;
   /* Bolt lives bottom-left; a touch further in on wide screens. */
   R.layout = function () {
     homeX = window.innerWidth > window.innerHeight ? 11 : 16;

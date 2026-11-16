@@ -76,7 +76,7 @@
     const holeY = z.y0 + h * 0.27, pieceY = z.y0 + h * 0.83;
     if (board) {
       board.style.left = (z.x0 + z.x1) / 2 + '%';
-      board.style.width = z.x1 - z.x0 + '%';
+      board.style.width = Math.min(98, z.x1 - z.x0 + 5) + '%';
       board.style.top = holeY + '%';
     }
     holes.forEach((hl, i) => U.place(hl.el, xs[i], holeY));

@@ -43,14 +43,17 @@
       ears = '<path d="M16 46 L20 10 L46 26 Z" fill="' + c.b + '" ' + S + '/><path d="M84 46 L80 10 L54 26 Z" fill="' + c.b + '" ' + S + '/>' +
         '<path d="M24 34 L25 20 L36 27 Z" fill="#ffc0dc"/><path d="M76 34 L75 20 L64 27 Z" fill="#ffc0dc"/>';
     } else { /* frog: eyes sit in bumps on top of the head */
-      ears = [30, 70].map((x) => '<circle cx="' + x + '" cy="30" r="15" fill="' + c.b + '" ' + S + '/><circle cx="' + x + '" cy="30" r="9.5" fill="#fff"/>').join('');
-      eyeY = 30; eyeX = 20; eyeR = 5.5;
+      ears = [29, 71].map((x) => '<circle cx="' + x + '" cy="28" r="18" fill="' + c.b + '" ' + S + '/><circle cx="' + x + '" cy="28" r="12" fill="#fff"/>').join('');
+      eyeY = 29; eyeX = 21; eyeR = 6.5;
     }
     const eye = (x) => '<circle cx="' + x + '" cy="' + eyeY + '" r="' + eyeR + '" fill="' + INK + '"/><circle cx="' + (x - 2) + '" cy="' + (eyeY - 2.2) + '" r="2.2" fill="#fff"/>';
     const happy = (x) => '<path d="M' + (x - 6) + ' ' + (eyeY + 2) + ' Q' + x + ' ' + (eyeY - 7) + ' ' + (x + 6) + ' ' + (eyeY + 2) + '" fill="none" ' + S + '/>';
     const whiskers = kind === 'cat'
       ? '<path d="M14 62 H26 M15 70 L26 68 M86 62 H74 M85 70 L74 68" fill="none" ' + S + ' stroke-width="2.5"/>' : '';
-    const nose = kind === 'frog' ? '' : '<ellipse cx="50" cy="63" rx="4.5" ry="3.2" fill="' + INK + '"/>';
+    const frog = kind === 'frog';
+    const nose = frog ? '<circle cx="45" cy="57" r="1.8" fill="' + INK + '"/><circle cx="55" cy="57" r="1.8" fill="' + INK + '"/>'
+      : '<ellipse cx="50" cy="63" rx="4.5" ry="3.2" fill="' + INK + '"/>';
+    const smile = frog ? 'M29 66 Q50 86 71 66' : 'M41 71 Q50 80 59 71';
     return svg(
       ears +
       '<ellipse cx="50" cy="58" rx="40" ry="36" fill="' + c.b + '" ' + S + '/>' +
@@ -60,7 +63,7 @@
       '<g class="eyes-happy">' + happy(50 - eyeX) + happy(50 + eyeX) + '</g>' +
       '<circle cx="23" cy="66" r="6.5" fill="#ff7eb6" opacity=".6"/><circle cx="77" cy="66" r="6.5" fill="#ff7eb6" opacity=".6"/>' +
       whiskers + nose +
-      '<path class="mouth-closed" d="M41 71 Q50 80 59 71" fill="none" ' + S + ' stroke-width="3.5"/>' +
+      '<path class="mouth-closed" d="' + smile + '" fill="none" ' + S + ' stroke-width="3.5"/>' +
       '<g class="mouth-open"><ellipse cx="50" cy="76" rx="11" ry="10" fill="#7a2b4f" ' + S + ' stroke-width="3"/><ellipse cx="50" cy="81" rx="6" ry="4" fill="#ff7e9e"/></g>'
     );
   };
@@ -71,11 +74,13 @@
   const FRUIT = {
     apple: () => stem(50, 30) + leaf(55, 20, -10) +
       '<path d="M50 30 C38 20 13 26 13 53 C13 77 32 93 50 87 C68 93 87 77 87 53 C87 26 62 20 50 30Z" fill="#ff5a5f" ' + S + '/>' + shine(30, 48, 6, 11, 20) + face(50, 56),
-    banana: () => '<path d="M16 34 C20 68 52 90 88 72 C91 68 89 62 84 62 C60 68 40 54 31 28 C28 20 14 23 16 34Z" fill="#ffd23f" ' + S + '/>' +
-      '<path d="M18 30 C17 24 27 21 30 27" fill="none" stroke="#8a5a3c" stroke-width="5" stroke-linecap="round"/>' +
-      '<path d="M30 52 C40 66 54 72 68 72" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".5"/>',
+    banana: () => '<path d="M13 32 C15 74 54 98 90 76 C94 72 91 63 85 63 C66 66 49 52 40 27 C36 16 12 19 13 32Z" fill="#ffd23f" ' + S + '/>' +
+      '<path d="M16 28 C15 21 34 19 38 25" fill="none" stroke="#8a5a3c" stroke-width="5" stroke-linecap="round"/>' +
+      '<path d="M22 40 C24 50 28 58 34 65" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"/>' +
+      '<g transform="rotate(30 52 68)">' + face(52, 66, 0.6) + '</g>',
     grapes: () => stem(50, 24) + leaf(54, 16, -5) +
-      [[30, 40], [50, 37], [70, 40], [40, 57], [60, 57], [50, 74]].map((p) => '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="13.5" fill="#9b6bff" ' + S + '/><circle cx="' + (p[0] - 4) + '" cy="' + (p[1] - 4) + '" r="3.5" fill="#fff" opacity=".5"/>').join(''),
+      [[30, 38], [50, 35], [70, 38], [36, 56], [64, 56], [50, 76]].map((p) => '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="13.5" fill="#9b6bff" ' + S + '/><circle cx="' + (p[0] - 4) + '" cy="' + (p[1] - 4) + '" r="3" fill="#fff" opacity=".5"/>').join('') +
+      '<circle cx="50" cy="54" r="17" fill="#9b6bff" ' + S + '/><circle cx="43" cy="46" r="3.5" fill="#fff" opacity=".5"/>' + face(50, 53, 0.6),
     orange: () => '<circle cx="50" cy="55" r="36" fill="#ff9f1c" ' + S + '/>' + leaf(50, 20, -15) + shine(31, 42, 6, 11, 30) + face(50, 56) +
       '<circle cx="66" cy="34" r="1.5" fill="#e07f00"/><circle cx="74" cy="46" r="1.5" fill="#e07f00"/><circle cx="30" cy="76" r="1.5" fill="#e07f00"/>',
     pear: () => stem(50, 16) + leaf(55, 8, 5) +
@@ -108,7 +113,7 @@
   A.shape = function (kind, color, opts) {
     const s = SHAPES[kind], c = COLORS[color];
     if (opts && opts.hole) {
-      return svg('<path d="' + s.d + '" fill="' + INK + '" opacity=".16" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>' +
+      return svg('<path d="' + s.d + '" fill="' + INK + '" opacity=".24" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>' +
         '<path d="' + s.d + '" fill="none" stroke="' + c.b + '" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="1 10"/>');
     }
     return svg('<path d="' + s.d + '" fill="' + c.b + '" ' + S + ' stroke-width="5"/>' +

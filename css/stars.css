@@ -11,10 +11,11 @@
 .item.star.landed .item-in > svg { animation: none; }
 
 .star-meter {
-  position: absolute; transform: translateX(-50%); z-index: 14; pointer-events: none;
-  display: flex; gap: clamp(4px, 1.2vmin, 10px);
+  position: absolute; transform: translate(-50%, -50%); z-index: 9; pointer-events: none;
+  display: flex; gap: clamp(5px, 1.4vmin, 12px); padding: clamp(6px, 1.6vmin, 12px) clamp(12px, 3vmin, 22px);
+  background: #fbfdff; border-radius: 999px; box-shadow: 0 0 0 3px rgba(43, 45, 91, .16), 0 6px 0 rgba(43, 45, 91, .16);
 }
-.star-meter .slot { position: relative; width: clamp(24px, 6vmin, 46px); aspect-ratio: 1; }
+.star-meter .slot { position: relative; width: clamp(32px, 8vmin, 60px); aspect-ratio: 1; }
 .star-meter .slot > div { position: absolute; inset: 0; }
 .star-meter .s-full { opacity: 0; transform: scale(0); }
 .star-meter .slot.full .s-full { opacity: 1; transform: none; animation: meter-pop .6s var(--spring); filter: drop-shadow(0 2px 0 rgba(43, 45, 91, .2)); }

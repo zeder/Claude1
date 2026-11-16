@@ -7,8 +7,11 @@
   --white: #f7faff;
   --obj: clamp(96px, 22vmin, 190px);      /* draggable objects and targets */
   --bolt: clamp(92px, 21vmin, 180px);
-  --sticker: clamp(44px, 10vmin, 86px);
+  --sticker: clamp(48px, 13vmin, 112px);
   --spring: cubic-bezier(.3, 1.45, .5, 1);
+}
+@media (orientation: portrait) {
+  :root { --obj: clamp(96px, 29vmin, 200px); --bolt: clamp(100px, 27vmin, 190px); }
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
@@ -23,11 +26,11 @@ html, body {
 svg { display: block; width: 100%; height: 100%; overflow: visible; }
 
 /* ---------- background ---------- */
-.sky { position: absolute; inset: 0; opacity: 0; transition: opacity 2.5s ease; }
+.sky-layer { position: absolute; inset: 0; opacity: 0; transition: opacity 2.5s ease; }
 .sky-0 { background: linear-gradient(#6fcbff 0%, #a9e4ff 45%, #e3f8ff 78%); }
-.sky-1 { background: linear-gradient(#ff8f6b 0%, #ffb88a 40%, #ffe3a8 78%); }
+.sky-1 { background: linear-gradient(#7c6fe6 0%, #c58be8 32%, #ff9fbf 58%, #ffd0a6 82%); }
 .sky-2 { background: linear-gradient(#232a6b 0%, #3f3f9a 45%, #7a6bc9 80%); }
-.sky-3 { background: linear-gradient(#b79bff 0%, #ffb3d1 45%, #ffe7c2 78%); }
+.sky-3 { background: linear-gradient(#4fd2d6 0%, #a6efe2 45%, #fff3cf 80%); }
 .tod-0 .sky-0, .tod-1 .sky-1, .tod-2 .sky-2, .tod-3 .sky-3 { opacity: 1; }
 
 .sun, .moon {
@@ -36,7 +39,10 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 }
 .sun .rays { transform-origin: 50% 50%; transform-box: fill-box; animation: spin 40s linear infinite; }
 .moon { opacity: 0; }
-.tod-1 .sun { top: 30%; }
+.sun svg { transition: filter 2.5s ease; }
+.tod-1 .sun svg { filter: hue-rotate(-22deg) saturate(1.5) brightness(.98); }
+.tod-1 { --cloud: #ffd3dd; } .tod-2 { --cloud: #8d8fdc; } .tod-3 { --cloud: #fffbea; }
+.cloud svg g { fill: var(--cloud, #fff); transition: fill 2.5s ease; }
 .tod-2 .sun { opacity: 0; top: 40%; }
 .tod-2 .moon { opacity: 1; }
 .night-stars { position: absolute; inset: 0 0 45% 0; opacity: 0; transition: opacity 2.5s ease; }
@@ -45,24 +51,35 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
   position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #fff7c2;
   box-shadow: 0 0 8px 2px rgba(255, 247, 194, .7); animation: twinkle 3s ease-in-out infinite;
 }
-.cloud { position: absolute; width: clamp(90px, 24vmin, 220px); aspect-ratio: 2; opacity: .92; animation: drift linear infinite; }
-.cloud.c1 { top: 16%; left: -30%; animation-duration: 95s; }
-.cloud.c2 { top: 30%; left: -30%; animation-duration: 130s; animation-delay: -60s; transform: scale(.7); }
-.cloud.c3 { top: 7%; left: -30%; animation-duration: 160s; animation-delay: -110s; transform: scale(.85); }
+.cloud { position: absolute; width: clamp(70px, 17vmin, 170px); aspect-ratio: 2; opacity: .92; animation: drift linear infinite; }
+.cloud.c1 { top: 10%; left: -30%; animation-duration: 95s; }
+.cloud.c2 { top: 5%; left: -30%; animation-duration: 130s; animation-delay: -60s; transform: scale(.7); }
+.cloud.c3 { top: 1%; left: -30%; animation-duration: 160s; animation-delay: -110s; transform: scale(.85); }
 .tod-2 .cloud { opacity: .35; }
 .hills { position: absolute; left: 0; right: 0; bottom: 0; height: 46%; transition: filter 2.5s ease; }
-.tod-1 .hills { filter: saturate(1.05) sepia(.18) hue-rotate(-12deg); }
+.tod-1 .hills { filter: brightness(.86) saturate(1.1) sepia(.22) hue-rotate(-18deg); }
 .tod-2 .hills { filter: brightness(.62) saturate(.9) hue-rotate(28deg); }
-.tod-3 .hills { filter: hue-rotate(-8deg) saturate(1.05); }
+.tod-3 .hills { filter: hue-rotate(12deg) saturate(1.08) brightness(1.03); }
 
 /* ---------- stickers (earned, persistent) ---------- */
+#stickers { z-index: 6; }
 .sticker {
   position: absolute; width: var(--sticker); aspect-ratio: 1; transform: translate(-50%, -50%);
-  transition: left 1s var(--spring), top 1s var(--spring), transform 1s var(--spring);
+  transition: left 1s var(--spring), top 1s var(--spring), transform 1s var(--spring), width .9s ease;
   filter: drop-shadow(0 3px 0 rgba(43, 45, 91, .16));
 }
 .sticker.ground { transform: translate(-50%, -92%); }
-.sticker.flying { transform: translate(-50%, -50%) scale(2.2) rotate(-14deg); z-index: 70; }
+.sticker.award { width: min(58vmin, 340px); transform: translate(-50%, -50%); z-index: 70; animation: award-in .6s var(--spring) both; }
+.sticker.award.go { animation: none; width: var(--sticker); }
+.sticker.award.go.ground { transform: translate(-50%, -92%); }
+.sunburst {
+  position: absolute; left: 50%; top: 42%; width: min(100vmin, 720px); aspect-ratio: 1; z-index: 68; pointer-events: none;
+  border-radius: 50%; translate: -50% -50%;
+  background: repeating-conic-gradient(rgba(255, 255, 255, .85) 0 12deg, rgba(255, 233, 130, .55) 12deg 24deg);
+  -webkit-mask: radial-gradient(circle, #000 25%, transparent 68%); mask: radial-gradient(circle, #000 25%, transparent 68%);
+  animation: burst-spin 14s linear infinite, burst-in .5s ease both; transition: opacity .5s ease;
+}
+.sunburst.out { opacity: 0; }
 .sticker svg { animation: sway 4s ease-in-out infinite; transform-origin: 50% 100%; }
 .sticker.sky svg { animation: floaty 5s ease-in-out infinite; }
 .sticker.party svg { animation: hop .5s ease-in-out infinite; }
@@ -73,9 +90,11 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
   transform: translate(-50%, -50%); will-change: transform; z-index: 10;
   filter: drop-shadow(0 6px 0 rgba(43, 45, 91, .16));
 }
+/* white keyline keeps pieces readable on any sky or hill colour */
+.item.draggable, .item.star { filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 6px 0 rgba(43, 45, 91, .18)); }
 .item.draggable { cursor: grab; touch-action: none; z-index: 20; }
 .item.draggable::before { content: ""; position: absolute; inset: -14px; border-radius: 50%; } /* bigger grab area */
-.item.dragging { cursor: grabbing; z-index: 50; filter: drop-shadow(0 18px 6px rgba(43, 45, 91, .22)); }
+.item.draggable.dragging { cursor: grabbing; z-index: 50; filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 18px 6px rgba(43, 45, 91, .24)); }
 .item.locked { pointer-events: none; }
 .item-in { width: 100%; height: 100%; animation: pop-in .55s var(--spring) both; }
 .item.draggable .item-in > svg { animation: bob 2.6s ease-in-out infinite; }
@@ -103,7 +122,8 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
   transform: translateX(-50%); z-index: 30; cursor: pointer; touch-action: none;
   transition: left .18s ease-out; filter: drop-shadow(0 6px 0 rgba(43, 45, 91, .18));
 }
-#bolt.slow { transition: left .7s var(--spring); }
+#bolt.slow { transition: left .7s var(--spring), transform .7s var(--spring); }
+#bolt.parade { left: 50% !important; transform: translateX(-50%) scale(1.4); transform-origin: 50% 100%; transition: left .7s var(--spring), transform .7s var(--spring); }
 #bolt .bolt-in { width: 100%; height: 100%; transform-origin: 50% 100%; animation: bob 3s ease-in-out infinite; }
 #bolt .arm { transform-box: fill-box; transition: transform .3s var(--spring); }
 #bolt .arm-l, #bolt .arm-r { transform-origin: 50% 16%; }
@@ -123,13 +143,14 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 #bolt.point .arm-r { transform: rotate(-120deg); animation: wave .5s ease-in-out 3; }
 #bolt.point .arm-l { transform: none; }
 #bolt .basket {
-  position: absolute; left: 50%; top: -20%; width: 104%; aspect-ratio: 120 / 64;
+  position: absolute; left: 50%; top: -37%; width: 112%; aspect-ratio: 120 / 64;
   transform: translateX(-50%) scale(0); transform-origin: 50% 100%; transition: transform .4s var(--spring);
 }
 #bolt.mode-basket .basket { transform: translateX(-50%) scale(1); }
-#bolt.mode-basket .arm-l { transform: rotate(155deg); }
-#bolt.mode-basket .arm-r { transform: rotate(-155deg); }
 #bolt.mode-basket .antenna { opacity: 0; }
+#bolt.mode-basket .arm { transform-origin: 50% 16%; }
+#bolt.mode-basket .arm-l { transform: rotate(165deg) scaleY(1.35); }
+#bolt.mode-basket .arm-r { transform: rotate(-165deg) scaleY(1.35); }
 #bolt .basket.catch { animation: basket-catch .3s var(--spring); }
 
 /* ---------- hint hand, mute ---------- */
@@ -140,7 +161,7 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 #mute {
   position: absolute; right: max(10px, env(safe-area-inset-right)); top: max(10px, env(safe-area-inset-top));
   width: 44px; height: 44px; padding: 8px; border: 0; border-radius: 50%; z-index: 65;
-  background: rgba(255, 255, 255, .55); cursor: pointer; opacity: .75;
+  background: rgba(255, 255, 255, .85); cursor: pointer;
 }
 #mute:focus-visible { outline: 3px solid var(--ink); }
 #mute.off .waves { display: none; }
@@ -148,10 +169,18 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 
 /* ---------- parade (every 10 rounds) ---------- */
 .parade-rainbow {
-  position: absolute; left: 50%; bottom: -4%; width: min(120vw, 170vh); aspect-ratio: 2;
-  transform: translate(-50%, 100%); z-index: 5; pointer-events: none;
-  animation: rainbow-rise 5s ease-in-out forwards;
+  position: absolute; left: 50%; bottom: 6%; width: min(125vw, 165vh); aspect-ratio: 2;
+  transform: translate(-50%, 130%); z-index: 5; pointer-events: none;
+  animation: rainbow-rise 6.8s ease-in-out forwards;
 }
+@media (orientation: portrait) { .parade-rainbow { width: 170vw; bottom: 16%; } }
+.parade-walker {
+  position: absolute; left: 0; top: 38%; width: calc(var(--obj) * .8); aspect-ratio: 1; z-index: 7; pointer-events: none;
+  transform: translateX(-130%); animation: walk 3.8s linear forwards;
+  filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 6px 0 rgba(43, 45, 91, .18));
+}
+.parade-walker > div { width: 100%; height: 100%; animation: hop .45s ease-in-out infinite; }
+.parade-walker .eyes-open, .parade-walker .mouth-open { display: none; }
 
 /* ---------- keyframes ---------- */
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -175,7 +204,11 @@ svg { display: block; width: 100%; height: 100%; overflow: visible; }
 @keyframes wave { 50% { transform: rotate(-150deg); } }
 @keyframes spin-hop { 0% { transform: none; } 50% { transform: translateY(-25%) rotate(180deg); } 100% { transform: rotate(360deg); } }
 @keyframes basket-catch { 40% { transform: translateX(-50%) scale(1.15, .85); } }
-@keyframes rainbow-rise { 0% { transform: translate(-50%, 100%); } 25%, 75% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, 100%); } }
+@keyframes rainbow-rise { 0% { transform: translate(-50%, 130%); } 16%, 86% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, 130%); } }
+@keyframes walk { to { transform: translateX(calc(100vw + 30%)); } }
+@keyframes award-in { from { transform: translate(-50%, -50%) scale(0) rotate(-40deg); } to { transform: translate(-50%, -50%); } }
+@keyframes burst-spin { to { rotate: 360deg; } }
+@keyframes burst-in { from { opacity: 0; scale: .3; } }
 
 @media (prefers-reduced-motion: reduce) {
   .cloud, .sun .rays, .item.draggable .item-in > svg, #bolt .bolt-in, .sticker svg { animation: none; }
